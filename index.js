@@ -38,7 +38,7 @@ app.get('/buy', function(req, res) {
 
 })
 
-app.post('/contacts', function(req, res) {
+app.get('/contacts', function(req, res) {
     //sending messages
     let data = req.body
     console.log(data)
