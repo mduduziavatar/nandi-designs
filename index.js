@@ -26,9 +26,9 @@ const router = express.Router;
 
 
 //after you added this restart the app
-app.get("/", async function(req, res) {
-    const sales = await pool.query(`select id, name, price as cost, product as "product" from sales`)
-    res.render("index", { sales: sales.rows });
+app.get("/", function(req, res) {
+    // const sales = await pool.query(`select id, name, price as cost, product as "product" from sales`)
+    res.render("index");
 });
 
 app.get('/buy', function(req, res) {
