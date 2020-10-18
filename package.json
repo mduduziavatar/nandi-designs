@@ -16,6 +16,7 @@
         "express-handlebars": "^5.1.0",
         "nodemailer": "^6.4.14",
         "nodemailer-mailgun-transport": "^2.0.1",
-        "pg": "^8.4.1"
+        "pg": "^8.4.1",
+        "request": "^2.88.2"
     }
 }

@@ -1,6 +1,6 @@
 <div class="container">
 
-    <form action="/contacts" method="get">
+    <form method="POST" action="send">
         <div class="row">
             <div class="col-12">
                 <!--Section: Contact v.2-->
@@ -14,18 +14,19 @@
                         contact us directly. Our team will come back to you within
                         a matter of hours to help you.</p>
                 </section>
+                <h2>{{msg}}</h2>
             </div>
             <div class="col-md-12 mb-md-0 mb-4" style="float: center; text-align: center;">
                 <label for="defaultName">Name</label>
 
-                <input type="text" id="defaultContactFormName" name="selector" class="form-control mb-4"
-                    placeholder="Name" value="{{textBoxValue.selector}}">
+                <input type="text" id="defaultContactFormName" name="name" class="form-control mb-4"
+                    placeholder="Name">
                 <label for="defaultEmail">E-mail</label>
 
-                <input type="email" id="defaultContactFormEmail" class="form-control mb-4" placeholder="E-mail">
+                <input type="email" id="defaultContactFormEmail" name="email" class="form-control mb-4" placeholder="E-mail">
 
                 <label for="defaultSelect">Subject</label>
-                <select id="defaultSelect" class="browser-default custom-select mb-4">
+                <select id="defaultSelect" name="subject" class="browser-default custom-select mb-4">
                     <option value="" disabled="">Choose option</option>
                     <option value="1" selected="">Feedback</option>
                     <option value="2">Report a bug</option>
@@ -34,7 +35,7 @@
                 </select>
                 <label for="defaultMessage">Message</label>
 
-                <textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3"
+                <textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" name="message"
                     placeholder="Message"></textarea>
 
                 <div class="custom-control custom-checkbox mb-4">
@@ -49,24 +50,5 @@
         </div>
 
     </form>
-    <script>
-        $('form').on('submit', function (e) {
-            e.preventDefault();
-            const name = $('#defaultContactFormName').val().trim();
-            const email = $('#defaultContactFormEmail').val().trim();
-            const subject = $('#defaultSelect').val().trim();
-            const text = $('#exampleFormControlTextarea2').val().trim();
-
-            const data = {
-                name,
-                email,
-                subject,
-                text
-            };
-
-            $.post('/contacts', data, function () {
-                console.log('Server works')
-            });
-        });
-    </script>
+    
 </div>
