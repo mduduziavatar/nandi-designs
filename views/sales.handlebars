@@ -1,0 +1,31 @@
+<div class="col-12">
+      <h1 style="text-align: center;">Intelligence</h1>
+
+      <table class="table table">
+        <tr>
+          <th scope="col">Customer name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Product</th>
+
+        </tr>
+        {{#products}}
+        <tr>
+          <td>
+            {{description}}
+          </td>
+          <td>
+            {{price}}
+          </td>
+          <td>
+            {{category_description}}
+          </td>
+
+          {{/products}}
+        </tr>
+      </table>
+
+      {{#no_products}}
+      <p>No products available yet. Add some above.</p>
+      {{/no_products}}
+    </div>
+  </div>

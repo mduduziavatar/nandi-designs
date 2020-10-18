@@ -1,0 +1,72 @@
+<div class="container">
+
+    <form action="/contacts" method="POST">
+        <div class="row">
+            <div class="col-12">
+                <!--Section: Contact v.2-->
+                <section class="mb-6">
+
+                    <!--Section heading-->
+                    <h2 class="h1-responsive font-weight-bold text-center my-4">Contact us</h2>
+                    <!--Section description-->
+                    <p class="text-center w-responsive mx-auto mb-5">Do you have any questions? Please do not hesitate
+                        to
+                        contact us directly. Our team will come back to you within
+                        a matter of hours to help you.</p>
+                </section>
+            </div>
+            <div class="col-md-12 mb-md-0 mb-4" style="float: center; text-align: center;">
+                <label for="defaultName">Name</label>
+
+                <input type="text" id="defaultContactFormName" name="selector" class="form-control mb-4"
+                    placeholder="Name" value="{{textBoxValue.selector}}">
+                <label for="defaultEmail">E-mail</label>
+
+                <input type="email" id="defaultContactFormEmail" class="form-control mb-4" placeholder="E-mail">
+
+                <label for="defaultSelect">Subject</label>
+                <select id="defaultSelect" class="browser-default custom-select mb-4">
+                    <option value="" disabled="">Choose option</option>
+                    <option value="1" selected="">Feedback</option>
+                    <option value="2">Report a bug</option>
+                    <option value="3">Feature request</option>
+                    <option value="4">Feature request</option>
+                </select>
+                <label for="defaultMessage">Message</label>
+
+                <textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3"
+                    placeholder="Message"></textarea>
+
+                <div class="custom-control custom-checkbox mb-4">
+                    <input type="checkbox" class="custom-control-input" id="defaultContactFormCopy">
+                    <label class="custom-control-label" for="defaultContactFormCopy">Send me a copy of this
+                        message</label>
+                </div>
+
+                <button class="btn btn-info btn-block" type="submit">Send</button>
+
+            </div>
+        </div>
+
+    </form>
+    <script>
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            const name = $('#defaultContactFormName').val().trim();
+            const email = $('#defaultContactFormEmail').val().trim();
+            const subject = $('#defaultSelect').val().trim();
+            const text = $('#exampleFormControlTextarea2').val().trim();
+
+            const data = {
+                name,
+                email,
+                subject,
+                text
+            };
+
+            $.post('/contacts', data, function () {
+                console.log('Server works')
+            });
+        });
+    </script>
+</div>
