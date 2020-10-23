@@ -1,4 +1,6 @@
 const express = require("express");
+const NandiDesign = require('./nandi');
+const env = require('dotenv').config();
 const pg = require("pg");
 const Pool = pg.Pool;
 const connectionString = process.env.DATABASE_URL || 'postgresql://mdu:pg123@localhost:5432/nandi_collection';
@@ -13,27 +15,56 @@ app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false })); // add this line
 app.use(bodyParser.json());
+const nandiDesign = NandiDesign(pool);
 // const sendMail = require('./mail')
-const nodemailer = require('nodemailer');
 
+// for sending emails
+const nodemailer = require('nodemailer');
 const mailGun = require('nodemailer-mailgun-transport');
 
 
 
 
 //after you added this restart the app
-app.get("/", function(req, res) {
-    // const sales = await pool.query(`select id, name, price as cost, product as "product" from sales`)
-    res.render("index");
-});
-
-app.get('/buy', function(req, res) {
-
-    res.render("index");
+app.get("/", async function(req, res) {
+    //  const sales = await pool.query(`select id, name, price as price, product as "product" from sales`)
+    res.render("index", {});
 
 });
 
-app.post('/send', function(req, res) {
+
+app.get("/sales", async function(req, res) {
+    const sales = await pool.query(`select * from sales`)
+    res.render("sales", {
+        sales: sales.rows
+    });
+
+});
+app.get('/filter', async function(req, res) {
+    const priceFilter = req.query.priceFilter;
+
+    let filteredData = [];
+
+
+    if (priceFilter === 'all') {
+        const allSales = await pool.query(`select * from sales where price <= 300`);
+        filteredData = allSales.rows
+    } else if (priceFilter === 'one') {
+        const lessThen = await pool.query(`select * from sales where price <= 300`);
+        filteredData = lessThen.rows
+    } else if (priceFilter === 'three') {
+        const moreThen = await pool.query(`select * from sales where price >= 300`);
+        filteredData = moreThen.rows
+    } else {
+        res.redirect('sales')
+    }
+    res.render("sales", {
+        sales: await priceFilter
+    });
+
+});
+
+app.post('/send', async function(req, res) {
     const output = `
     <p>You have a new contact request</p>
     <h3>Contact Details</h3>
@@ -47,52 +78,101 @@ app.post('/send', function(req, res) {
     <p>${req.body.message}</p>
 
     `;
+    console.log(req.body)
 
-    let transporter = nodemailer.createTransport({
+    async function main() {
+        // Generate test SMTP service account from ethereal.email
+        // Only needed if you don't have a real mail account for testing
+        let testAccount = await nodemailer.createTestAccount();
 
-        auth: {
-            api_key: '75f013781f63757598f54a96b64398a9-2fbe671d-f60903ae',
-            domain: 'sandbox88ef036ecb064263b3fdaac595b964ee.mailgun.org'
-        },
-        tls: { rejectUnauthorized: false }
-
-    });
-
-    // send mail with defined transport object
-    const sendMail = (email, subject, text) => {
-        const mailOptions = {
-            from: email,
-            to: 'mduduziavatar@gmail.com',
-            subject,
-            text
-        };
-
-        transporter.sendMail(mailOptions, function(err, data) {
-            if (err) {
-                (err, null)
-                console.log('error occurs');
-            } else {
-                (null, data)
-                console.log('success');
-
-            }
-
+        // create reusable transporter object using the default SMTP transport
+        let transporter = nodemailer.createTransport({
+            service: 'gmail', // true for 465, false for other ports
+            auth: {
+                user: process.env.GMAIL_EMAIL, // generated ethereal user
+                pass: process.env.PASS, // generated ethereal password
+            },
         });
-    };
-    res.render('contacts', { msg: 'Email has been sent' })
+
+        // send mail with defined transport object
+        let info = await transporter.sendMail({
+            from: req.body.email, // sender address
+            to: 'circlefinanceloans@gmail.com', // list of receivers
+            subject: req.body.subject, // Subject line
+            text: req.body.message, // plain text body
+            html: output
+        });
+
+        console.log("Message sent: %s", info.messageId);
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+        // Preview only available when sending through an Ethereal account
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    }
+
+    main().catch(console.error);
+    res.render('index')
 });
 
-app.get('/contacts', function(req, res) {
+app.get('/sales', function(req, res) {
     //sending messages
 
-    res.render("contacts");
-});
-
-app.get("/sales", function(req, res) {
     res.render("sales");
 });
 
-const PORT = process.env.PORT || 4009;
+app.post("/sales", async function(req, res) {
+    const price = req.body.price && Number(req.body.price);
+    const name = req.body.name;
+    const product = req.body.product;
+    console.log(req.body)
+
+    if (price && name && product) {
+        const INSERT_QUERY = "insert into sales (name, price, product) values ($1, $2, $3)";
+        await pool.query(INSERT_QUERY, [name, price, product]);
+        res.render("sales");
+    } else {
+
+
+        function validate(value, result) {
+            if (!value) {
+                return result;
+            }
+            return {};
+        }
+
+        const priceInvalid = validate(price, {
+            style: "is-invalid",
+            message: "Enter a valid amount e.g 200"
+        });
+
+        const customersNameInvalid = validate(name, {
+            style: "is-invalid",
+            message: "Enter a valid name e.g Siphiwe"
+        });
+
+        const productInvalid = validate(product, {
+            style: "is-invalid",
+            message: "Please enter a valid product e.g Nike blue pants"
+        });
+        const sales = await pool.query(`select id, name, price as price, product as "product" from sales`)
+
+
+        res.render("sales", {
+            name,
+            price,
+            sales: sales.rows,
+            priceInvalid,
+            productInvalid,
+            customersNameInvalid
+        });
+
+
+    }
+
+});
+
+const PORT = process.env.PORT || 4007;
 
 app.listen(PORT, function() {
     console.log("App started on port :" + PORT);

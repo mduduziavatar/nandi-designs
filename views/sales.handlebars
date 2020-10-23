@@ -1,31 +1,71 @@
-<div class="col-12">
-      <h1 style="text-align: center;">Intelligence</h1>
-
-      <table class="table table">
-        <tr>
-          <th scope="col">Customer name</th>
-          <th scope="col">Price</th>
-          <th scope="col">Product</th>
-
-        </tr>
-        {{#products}}
-        <tr>
-          <td>
-            {{description}}
-          </td>
-          <td>
-            {{price}}
-          </td>
-          <td>
-            {{category_description}}
-          </td>
-
-          {{/products}}
-        </tr>
-      </table>
-
-      {{#no_products}}
-      <p>No products available yet. Add some above.</p>
-      {{/no_products}}
-    </div>
+<div class="row">
+    
+  <div class="col-4">
+    <h4 class="mt-2">Business Information</h4>
+    <form action="/sales" method="POST">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Customers name</label>
+        <input type="text" name="name" value="{{name}}" class="form-control {{customersNameInvalid.style}}"
+          id="formGroupExampleInput" placeholder="eg. Snowy">
+        <div id="" class="invalid-feedback">
+          {{!-- Please provide a number of days. --}}
+          {{customersNameInvalid.message}}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="formGroupExampleInput2">Product Price</label>
+        <input type="number" value="{{price}}" name="price" class="form-control {{priceInvalid.style}}"
+          id="formGroupExampleInput2" placeholder="">
+        <div id="" class="invalid-feedback">
+          {{!-- Please provide a number of days. --}}
+          {{priceInvalid.message}}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="formGroupExampleInput2">Product Description</label>
+        <input type="text" name="product" value="{{product}}" class="form-control {{productInvalid.style}}"
+           placeholder="eg. Snowy">
+        <div id="" class="invalid-feedback">
+          {{!-- Please provide a number of days. --}}
+          {{productInvalid.message}}
+        </div>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save Information</button>
+      </div>
+    </form>
   </div>
+  <div class="col-8">
+    <h4 class="my-2" style="text-align: center;"></h>
+      <div class="mb-2">
+        <form action="/filter" method="get">
+          <strong>Filter by price:</strong>
+          <input class="ml-4" type="radio" name="priceFilter" value="all"> All
+          <input class="ml-4" type="radio" name="priceFilter" value="one"> R300 or less
+          <input class="ml-4" type="radio" name="priceFilter" value="three"> More then R300
+          <input class="btn btn-warning btn-sm" type="submit" value="Filter">
+        </form>
+      </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Customers name</th>
+            <th scope="col">Product Price</th>
+            <th scope="col">Product description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each sales}}
+          <tr>
+            <th scope="row">{{this.id}}</th>
+            <td>{{this.name}}</td>
+            <td>{{this.price}}</td>
+            <td>{{this.product}}</td>
+          </tr>
+          {{/each}}
+
+        </tbody>
+      </table>
+  </div>
+</div>

@@ -1,6 +1,3 @@
-<?PHP
-require_once('popup-contactform.php');
-?>
 <div class="container">
   <form action="/buy" method="get">
     <div class="card">
@@ -40,23 +37,99 @@ require_once('popup-contactform.php');
           </tr>
 
         </table>
-        {{!-- <button type="button" class="btn btn-primary"> <a class="nav-link" href="#"><span class="sr-only">(current)</span></a>
-      </button> --}}
-        <a class="btn btn-primary" href="/contacts" role="button" style="text-align: left; float: right;">Message Us</a>
-        <div class="col-md-6" style="text-align: center;">
+  </form>
 
-          <!-- Video -->
-          <div class="embed-responsive embed-responsive-16by9 mb-4">
-            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/vlDzYIIOYmM"
-              allowfullscreen></iframe>
+
+  {{!-- <a class="btn btn-primary" href="/contacts" role="button" style="text-align: left; float: right;">Message Us</a> --}}
+  <form method="POST" action="send">
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="float: right;"
+      data-whatever="@getbootstrap">Open modal for @getbootstrap</button>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="col-12">
+              <!--Section: Contact v.2-->
+              <section class="mb-6">
+
+                <!--Section heading-->
+                <h2 class="h1-responsive font-weight-bold text-center my-4">Contact us</h2>
+                <!--Section description-->
+                <p class="text-center w-responsive mx-auto mb-5">Do you have any questions? Please do not hesitate
+                  to
+                  contact us directly. Our team will come back to you within
+                  a matter of hours to help you.</p>
+              </section>
+              <h2>{{msg}}</h2>
+            </div>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="defaultName">Name</label>
+                <input type="text" id="defaultContactFormName" name="name" class="form-control mb-4" placeholder="Name">
+              </div>
+              <div class="form-group">
+                <label for="defaultEmail">E-mail</label>
+                <input type="email" id="defaultContactFormEmail" name="email" class="form-control mb-4"
+                  placeholder="E-mail">
+              </div>
+              <div class="form-group">
+                <label for="defaultSelect">Subject</label>
+                <select id="defaultSelect" name="subject" class="browser-default custom-select mb-4">
+                  <option value="" disabled="">Choose option</option>
+                  <option value="1" selected="">Feedback</option>
+                  <option value="2">Report a bug</option>
+                  <option value="3">Feature request</option>
+                  <option value="4">Feature request</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="defaultMessage" class="col-form-label">Message:</label>
+                <textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" name="message"
+                  placeholder="Message"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button class="btn btn-info btn-block" type="submit">Send</button>
+          </div>
         </div>
-       
+      </div>
   </form>
 </div>
+</div>
+<div class="col-md-6" style="text-align: center;">
 
-<?PHP
+  <!-- Video -->
+  <div class="embed-responsive embed-responsive-16by9 mb-4">
+    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/vlDzYIIOYmM" allowfullscreen></iframe>
+  </div>
 
-require_once('contactform-code.php');
-?>
+</div>
+
+</div>
+<script>$('form').on('submit', () => {
+
+    const email = $('#email').val().trim();
+    const subject = $('#subject').val().trim();
+    const message = $('#message').val().trim();
+
+    const data = {
+      email,
+      subject,
+      message
+    }
+
+    $.post('/send', data, function () {
+      console.log('Server received our data');
+    });
+
+  })</script>
