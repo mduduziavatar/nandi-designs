@@ -22,9 +22,40 @@ module.exports = function NandiDesign(pool) {
         }
 
     }
+
+    async function get(id) {
+        let productResult = await pool.query('select * from sales where id = $1', [id]);
+        let product = productResult.rows[0];
+        return product;
+
+    }
+
+    async function update(product) {
+        var data = [
+            product.name,
+            product.description,
+            product.price,
+            product.id
+        ];
+
+        let updateQuery = `UPDATE sales 
+            SET name = $1, 
+                product = $2, 
+                price = $3 
+            WHERE id = $4`;
+
+        return pool.query(updateQuery, data);
+    }
+
+    async function deleteById(id) {
+        return pool.query('delete from sales where id = $1', [id]);
+    }
     return {
         all,
         add,
-        filtered
+        filtered,
+        deleteById,
+        update,
+        get
     }
 };

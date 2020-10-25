@@ -1,5 +1,5 @@
 <div class="row">
-    
+
   <div class="col-4">
     <h4 class="mt-2">Business Information</h4>
     <form action="/sales" method="POST">
@@ -24,7 +24,7 @@
       <div class="form-group">
         <label for="formGroupExampleInput2">Product Description</label>
         <input type="text" name="product" value="{{product}}" class="form-control {{productInvalid.style}}"
-           placeholder="eg. Snowy">
+          placeholder="eg. Snowy">
         <div id="" class="invalid-feedback">
           {{!-- Please provide a number of days. --}}
           {{productInvalid.message}}
@@ -36,7 +36,8 @@
     </form>
   </div>
   <div class="col-8">
-    <h4 class="my-2" style="text-align: center;"></h>
+    <h4 class="my-2" style="text-align: center;">
+      </h>
       <div class="mb-2">
         <form action="/filter" method="get">
           <strong>Filter by price:</strong>
@@ -62,6 +63,10 @@
             <td>{{this.name}}</td>
             <td>{{this.price}}</td>
             <td>{{this.product}}</td>
+            <td>
+              <a href="/edit/{{id}}">Edit</a>
+              <a href="/reset/{{id}}">Delete</a>
+            </td>
           </tr>
           {{/each}}
 
