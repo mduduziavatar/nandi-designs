@@ -133,6 +133,18 @@ app.get('/products/edit/:id', function(req, res) {
 // });
 
 
+app.post('/products/update/:id', async function(req, res) {
+    await nandiDesign.update({
+        name: req.body.name,
+        product: req.body.description,
+        price: Number(req.body.price),
+        id: req.params.id
+    });
+
+    res.redirect('/sales');
+});
+
+
 app.post("/sales", async function(req, res) {
     const price = req.body.price && Number(req.body.price);
     const name = req.body.name;
