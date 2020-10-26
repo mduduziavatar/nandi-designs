@@ -41,7 +41,7 @@
 
 
   {{!-- <a class="btn btn-primary" href="/contacts" role="button" style="text-align: left; float: right;">Message Us</a> --}}
-  <form method="POST" action="send">
+  <form method="POST" action="email">
 
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="float: right;"
       data-whatever="@getbootstrap">Contact Us</button>
@@ -128,7 +128,7 @@
       message
     }
 
-    $.post('/send', data, function () {
+    $.post('/email', data, function () {
       console.log('Server received our data');
     });
 

@@ -15,11 +15,13 @@ app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false })); // add this line
 app.use(bodyParser.json());
+app.use(express.json());
+
 const nandiDesign = NandiDesign(pool);
 const session = require('express-session');
 const flash = require('express-flash');
 
-// const sendMail = require('./mail')
+const sendMail = require('./mail')
 
 // for sending emails
 const nodemailer = require('nodemailer');
@@ -27,9 +29,7 @@ const mailGun = require('nodemailer-mailgun-transport');
 
 //after you added this restart the app
 app.get("/", async function(req, res) {
-    //  const sales = await pool.query(`select id, name, price as price, product as "product" from sales`)
-    res.render("index", {});
-
+    res.render("index");
 });
 
 
@@ -65,57 +65,21 @@ app.get('/products/edit/:id', function(req, res) {
     res.render('products/edit/:id', {});
 });
 
-// app.post('/send', async function(req, res) {
-//     const output = `
-//     <p>You have a new contact request</p>
-//     <h3>Contact Details</h3>
-//     <ul>
-//     <li>Name: ${req.body.name}</li>
-//     <li>Email: ${req.body.email}</li>
-//     <li>Subject: ${req.body.subject}</li>
-//     <li>Message: ${req.body.message}</li>
-//     </ul>
-//     <h3>Message</h3>
-//     <p>${req.body.message}</p>
+app.post('/email', function(req, res) {
+    console.log('Data: ', req.body);
+    const { subject, email, message } = req.body;
+    sendMail(subject, email, message, function(err, data) {
+        if (err) {
+            res.status(500).json({
+                message: 'Internal Error'
+            });
+        } else {
+            res.json({ message: 'Email sent!!!!' })
 
-//     `;
-//     console.log(req.body)
+        }
 
-//     async function main() {
-//         // Generate test SMTP service account from ethereal.email
-//         // Only needed if you don't have a real mail account for testing
-//         let testAccount = await nodemailer.createTestAccount();
-
-//         // create reusable transporter object using the default SMTP transport
-//         let transporter = nodemailer.createTransport({
-//             service: 'gmail', // true for 465, false for other ports
-//             auth: {
-//                 user: process.env.GMAIL_EMAIL, // generated ethereal user
-//                 pass: process.env.PASS, // generated ethereal password
-//             },
-//         });
-
-//         // send mail with defined transport object
-//         let info = await transporter.sendMail({
-//             from: req.body.email, // sender address
-//             to: 'circlefinanceloans@gmail.com', // list of receivers
-//             subject: req.body.subject, // Subject line
-//             text: req.body.message, // plain text body
-//             html: output
-//         });
-
-//         console.log("Message sent: %s", info.messageId);
-//         // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-//         // Preview only available when sending through an Ethereal account
-//         console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-//         // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-//     }
-
-//     main().catch(console.error);
-//     res.render('index')
-// });
-
+    })
+});
 
 app.post('/products/update/:id', async function(req, res) {
     await nandiDesign.update({
@@ -124,7 +88,6 @@ app.post('/products/update/:id', async function(req, res) {
         price: Number(req.body.price),
         id: req.params.id
     });
-
     res.redirect('/sales');
 });
 
