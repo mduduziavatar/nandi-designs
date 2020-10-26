@@ -30,12 +30,12 @@ module.exports = function NandiDesign(pool) {
 
     }
 
-    async function update(product) {
+    async function update(database) {
         var data = [
-            product.name,
-            product.description,
-            product.price,
-            product.id
+            database.name,
+            database.product,
+            database.price,
+            database.id
         ];
 
         let updateQuery = `UPDATE sales 

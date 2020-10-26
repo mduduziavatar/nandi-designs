@@ -62,24 +62,8 @@ app.get('/filter', async function(req, res) {
 
 app.get('/products/edit/:id', function(req, res) {
 
-
-
-    res.render('products/edit/:id', {
-
-    });
+    res.render('products/edit/:id', {});
 });
-// app.post('/products/update/:id', async function(req, res) {
-//     const data = await {
-//         name: req.body.name,
-//         product: req.body.product,
-//         price: Number(req.body.price),
-//         id: req.params.id
-//     };
-//     req.flash('info', 'Product updated!')
-//     res.redirect('/products');
-
-// });
-
 
 // app.post('/send', async function(req, res) {
 //     const output = `
@@ -136,7 +120,7 @@ app.get('/products/edit/:id', function(req, res) {
 app.post('/products/update/:id', async function(req, res) {
     await nandiDesign.update({
         name: req.body.name,
-        product: req.body.description,
+        product: req.body.product,
         price: Number(req.body.price),
         id: req.params.id
     });
@@ -179,9 +163,12 @@ app.post("/sales", async function(req, res) {
             message: "Please enter a valid product e.g Nike blue pants"
         });
         const sales = await pool.query(`select * from sales`)
-
-
-
+        res.render("sales", {
+            priceInvalid,
+            customersNameInvalid,
+            sales: sales.rows,
+            productInvalid
+        });
     }
 });
 
