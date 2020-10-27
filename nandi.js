@@ -24,8 +24,8 @@ module.exports = function NandiDesign(pool) {
     }
 
     async function get(id) {
-        let productResult = await pool.query('select * from sales where id = $1', [id]);
-        let product = productResult.rows[0];
+        let productOutCome = await pool.query('select * from sales where id = $1', [id]);
+        let product = productOutCome.rows[0];
         return product;
     }
 
